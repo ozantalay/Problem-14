@@ -1,12 +1,13 @@
 import { TrashIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
+import { useState } from 'react'
 
 const cartProducts = [
   {
     id: 1,
     title: 'Basic Tee',
     href: '#',
-    price: '$32.00',
+    price: 32.00,
     color: 'Black',
     size: 'Large',
     imageSrc: '/product-01.jpg',
@@ -16,7 +17,7 @@ const cartProducts = [
     id: 2,
     title: 'Basic Tee',
     href: '#',
-    price: '$32.00',
+    price: 32.00,
     color: 'Sienna',
     size: 'Large',
     imageSrc: '/product-02.jpg',
@@ -27,6 +28,16 @@ const cartProducts = [
 // Çöp kutusu butonunu kullanarak sipariş özetinden ürün silmeyi mümkün kılın
 // Bonus: Doğru ara toplamı ve toplamı görüntüleyin
 export default function OrderSummary() {
+  const [cartProduct,setCartProduct]=useState(cartProducts)
+
+  const handleRemove = (productId) => {
+    setCartProduct(cartProduct.filter((product) => product.id !== productId));
+  };
+  const subtotal = cartProduct.reduce((total, product) => total + product.price, 0);
+  const shipping = 5.00;
+  const total = subtotal + shipping;
+
+
   return (
     <div className='max-w-sm py-8 mx-auto'>
       <h2 className='text-lg font-medium text-gray-900'>Sipariş özeti</h2>
@@ -34,7 +45,7 @@ export default function OrderSummary() {
       <div className='mt-4 rounded-lg border border-gray-200 bg-white shadow-sm'>
         <h3 className='sr-only'>Alışveriş sepetinizdeki ürünler</h3>
         <ul role='list' className='divide-y divide-gray-200'>
-          {cartProducts.map((product) => (
+          {cartProduct.map((product) => (
             <li key={product.id} className='flex px-4 py-6 sm:px-6'>
               <div className='flex-shrink-0'>
                 <Image
@@ -67,9 +78,11 @@ export default function OrderSummary() {
                     <button
                       type='button'
                       className='-m-2.5 flex items-center justify-center bg-white p-2.5 text-gray-400 hover:text-gray-500'
+                       onClick={() => handleRemove(product.id)} 
+                    
                     >
                       <span className='sr-only'>Kaldır</span>
-                      <TrashIcon className='h-5 w-5' aria-hidden='true' />
+                      <TrashIcon className='h-5 w-5' aria-hidden='true'  />
                     </button>
                   </div>
                 </div>
@@ -86,15 +99,15 @@ export default function OrderSummary() {
         <dl className='space-y-6 border-t border-gray-200 px-4 py-6 sm:px-6'>
           <div className='flex items-center justify-between'>
             <dt className='text-sm'>Ara Toplam</dt>
-            <dd className='text-sm font-medium text-gray-900'>$64.00</dd>
+            <dd className='text-sm font-medium text-gray-900'>${subtotal.toFixed(2)}</dd>
           </div>
           <div className='flex items-center justify-between'>
             <dt className='text-sm'>Kargo</dt>
-            <dd className='text-sm font-medium text-gray-900'>$5.00</dd>
+            <dd className='text-sm font-medium text-gray-900'>${shipping.toFixed(2)}</dd>
           </div>
           <div className='flex items-center justify-between border-t border-gray-200 pt-6'>
             <dt className='text-base font-medium'>Toplam</dt>
-            <dd className='text-base font-medium text-gray-900'>$69.00</dd>
+            <dd className='text-base font-medium text-gray-900'>${total.toFixed(2)}</dd>
           </div>
         </dl>
 
